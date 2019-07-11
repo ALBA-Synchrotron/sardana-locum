@@ -26,7 +26,11 @@ class LocumCoTiCtrl(AdlinkAICoTiCtrl):
     MaxDevice = 5
     class_prop = {'AdlinkAIDeviceName':{'Description' : 'AdlinkAI Tango device', 'Type' : 'PyTango.DevString'},
                   'LoCum4DeviceName':{'Description':'LoCum4 Tango device', 'Type':'PyTango.DevString'},
-                  'SampleRate':{'Description':'SampleRate set for AIDevice','Type':'PyTango.DevLong'}}
+                  'SampleRate':{'Description':'SampleRate set for AIDevice','Type':'PyTango.DevLong'},
+                  'SkipStart': {Description: 'Flag to skip if DS does not '
+                                             'start',
+                                Type: str,
+                                DefaultValue: 'true'}}
 
     
     #ctrl_extra_attributes ={ "SD": {'Type':'PyTango.DevDouble','Description':'Standard deviation','R/W Type':'PyTango.READ'}}
@@ -36,7 +40,7 @@ class LocumCoTiCtrl(AdlinkAICoTiCtrl):
 
         AdlinkAICoTiCtrl.__init__(self,inst,props, *args, **kwargs)
         #        self._log.setLevel(logging.DEBUG)
-        self._log.debug("__init__(%s, %s): Entering...", repr(inst), repr(props))
+        # self._log.debug("__init__(%s, %s): Entering...", repr(inst), repr(props))
 
         try:
             self.Locum = PyTango.DeviceProxy(self.LoCum4DeviceName)
@@ -47,7 +51,7 @@ class LocumCoTiCtrl(AdlinkAICoTiCtrl):
             raise
         
     def ReadOne(self, axis):
-        self._log.debug("ReadOne(%d): Entering...", axis)
+        # self._log.debug("ReadOne(%d): Entering...", axis)
         stateAd = self.AIDevice.state() 
         stateLoc = self.Locum.state() 
         mean = 1e-100
@@ -56,7 +60,7 @@ class LocumCoTiCtrl(AdlinkAICoTiCtrl):
         if stateAd == PyTango.DevState.ON and stateLoc == PyTango.DevState.ON: 
             mean = self.Locum["I%s"%(axis-1)].value
             #self.sd[axis] = float(self.Locum["BufferCh%sStdDesv"%(axis-1)].value)
-            self._log.debug("ReadOne(%d): mean=%f",axis, mean)
+            #self._log.debug("ReadOne(%d): mean=%f",axis, mean)
         return mean
             
         
