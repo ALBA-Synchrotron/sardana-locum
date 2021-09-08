@@ -1,13 +1,11 @@
 import logging
 import numpy
 import PyTango
-#from pool import CounterTimerController
-from AdlinkAICoTiCtrl import *
+from sardana.pool.controller import (CounterTimerController, Type, Access,
+                                     Description, DefaultValue)
+from sardana.tango.core.util import from_tango_state_to_state
+from AdlinkAICoTiCtrl import AdlinkAICoTiCtrl
 
-#not needeeb because AdlinkAICoTiCtrl do it.
-#from sardana import pool
-#from sardana.pool import PoolUtil
-#from sardana.pool.controller import PseudoCounterController
 
 def evalState(state):
     """This function converts Adlink device states into counters state."""
@@ -24,23 +22,29 @@ class LocumCoTiCtrl(AdlinkAICoTiCtrl):
     """
     
     MaxDevice = 5
-    class_prop = {'AdlinkAIDeviceName':{'Description' : 'AdlinkAI Tango device', 'Type' : 'PyTango.DevString'},
-                  'LoCum4DeviceName':{'Description':'LoCum4 Tango device', 'Type':'PyTango.DevString'},
-                  'SampleRate':{'Description':'SampleRate set for AIDevice','Type':'PyTango.DevLong'},
-                  'SkipStart': {Description: 'Flag to skip if DS does not '
-                                             'start',
-                                Type: str,
-                                DefaultValue: 'true'}}
-
-    
-    #ctrl_extra_attributes ={ "SD": {'Type':'PyTango.DevDouble','Description':'Standard deviation','R/W Type':'PyTango.READ'}}
-                             #"SampleRate":{'Type':'PyTango.DevLong','Description':'SampleRate set for AIDevice','R/W Type':'PyTango.READ'}}
+    ctrl_properties = {
+        'AdlinkAIDeviceName': {
+            Description: 'AdlinkAI Tango device',
+            Type: 'PyTango.DevString'
+        },
+        'LoCum4DeviceName': {
+            Description: 'LoCum4 Tango device',
+            Type: 'PyTango.DevString'
+        },
+        'SampleRate': {
+            Description: 'SampleRate set for AIDevice',
+            Type: 'PyTango.DevLong'
+        },
+        'SkipStart': {
+            Description: 'Flag to skip if DS does not start',
+            Type: str,
+            DefaultValue: 'true'
+        }
+    }
     
     def __init__(self, inst, props, *args, **kwargs):
 
         AdlinkAICoTiCtrl.__init__(self,inst,props, *args, **kwargs)
-        #        self._log.setLevel(logging.DEBUG)
-        # self._log.debug("__init__(%s, %s): Entering...", repr(inst), repr(props))
 
         try:
             self.Locum = PyTango.DeviceProxy(self.LoCum4DeviceName)
@@ -51,16 +55,12 @@ class LocumCoTiCtrl(AdlinkAICoTiCtrl):
             raise
         
     def ReadOne(self, axis):
-        # self._log.debug("ReadOne(%d): Entering...", axis)
-        stateAd = self.AIDevice.state() 
         stateLoc = self.Locum.state() 
         mean = 1e-100
         if axis == 1:
-            return self.integrationTime
-        if stateAd == PyTango.DevState.ON and stateLoc == PyTango.DevState.ON: 
+            return self.intTime
+        if stateLoc == PyTango.DevState.ON: 
             mean = self.Locum["I%s"%(axis-1)].value
-            #self.sd[axis] = float(self.Locum["BufferCh%sStdDesv"%(axis-1)].value)
-            #self._log.debug("ReadOne(%d): mean=%f",axis, mean)
         return mean
             
         
