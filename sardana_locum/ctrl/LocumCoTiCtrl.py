@@ -4,8 +4,8 @@ import PyTango
 from sardana.pool.controller import (CounterTimerController, Type, Access,
                                      Description, DefaultValue)
 from sardana.tango.core.util import from_tango_state_to_state
-from AdlinkAICoTiCtrl import AdlinkAICoTiCtrl
 
+from sardana_adlink.ctrl.AdlinkAICoTiCtrl import AdlinkAICoTiCtrl
 
 def evalState(state):
     """This function converts Adlink device states into counters state."""
