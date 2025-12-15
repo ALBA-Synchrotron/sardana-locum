@@ -1,0 +1,44 @@
+context:
+  name: sardana-locum
+  version: 1.0.1
+
+package:
+  name: ${{ name|lower }}
+  version: ${{ version }}
+
+source:
+  git: https://github.com/ALBA-Synchrotron/sardana-locum.git
+  tag: ${{ version }}
+build:
+  noarch: python
+  script: ${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  number: 0
+
+requirements:
+  host:
+    - python >=3.9
+    - pip
+    - setuptools
+  run:
+    - python >=3.9
+    - sardana
+    - numpy
+    - tango
+    - sardana
+    - sardana-adlink
+
+tests:
+  - python:
+      imports:
+        - sardana-locum
+      pip_check: true
+
+about:
+  summary: 'Locum sardana controller'
+  license: GPL-3.0-or-later
+  homepage: https://github.com/ALBA-Synchrotron/sardana-locum.git
+
+extra:
+  recipe-maintainers:
+    - jalarruy
+    - jrodriguez
