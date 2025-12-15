@@ -23,7 +23,6 @@ requirements:
     - python >=3.9
     - sardana
     - numpy
-    - tango
     - sardana
     - sardana-adlink
 
