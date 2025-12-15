@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-__version = "1.0.1"
+__version = "1.1.0"
 
 setup(
     name="sardana_locum",
