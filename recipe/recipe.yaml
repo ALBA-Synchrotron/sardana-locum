@@ -30,7 +30,7 @@ requirements:
 tests:
   - python:
       imports:
-        - sardana-locum
+        - sardana_locum
       pip_check: true
 
 about:
